@@ -29,8 +29,8 @@ func (c *Client) GetOnline(ctx context.Context) (*Online, error) {
 	return &result, nil
 }
 
-// OnlineStreams struct.
-type OnlineStreams struct {
+// OnlineStream struct.
+type OnlineStream struct {
 	Title    string `json:"title"`
 	Owner    string `json:"owner"`
 	Viewers  int    `json:"viewers"`
@@ -41,8 +41,8 @@ type OnlineStreams struct {
 }
 
 // GetOnlineStreams returns online streams.
-func (c *Client) GetOnlineStreams(ctx context.Context) (*OnlineStreams, error) {
-	var result OnlineStreams
+func (c *Client) GetOnlineStreams(ctx context.Context) ([]*OnlineStream, error) {
+	var result []*OnlineStream
 	u := "online/streams"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
@@ -55,7 +55,7 @@ func (c *Client) GetOnlineStreams(ctx context.Context) (*OnlineStreams, error) {
 		return nil, err
 	}
 
-	return &result, nil
+	return result, nil
 }
 
 // GetOnlineStaff returns online staff.
