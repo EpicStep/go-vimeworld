@@ -288,9 +288,9 @@ func (c *Client) GetUserMatchesBefore(ctx context.Context, id int, before string
 }
 
 // GetUserMatchesOffset return matches by offset.
-func (c *Client) GetUserMatchesOffset(ctx context.Context, id int, offset string, count int) (*UserMatches, error) {
+func (c *Client) GetUserMatchesOffset(ctx context.Context, id, offset, count int) (*UserMatches, error) {
 	var result UserMatches
-	u := fmt.Sprintf("user/%d/matches?offset=%s", id, offset)
+	u := fmt.Sprintf("user/%d/matches?offset=%d", id, offset)
 
 	if count > 0 {
 		u += "&count=" + strconv.Itoa(count)
