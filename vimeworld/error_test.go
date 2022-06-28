@@ -1,9 +1,11 @@
 package vimeworld_test
 
 import (
-	"github.com/EpicStep/go-vimeworld/v1/vimeworld"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+
+	"github.com/EpicStep/go-vimeworld/v1/vimeworld"
 )
 
 func TestError_Error(t *testing.T) {

@@ -1,9 +1,10 @@
 package vimeworld_test
 
 import (
-	"github.com/EpicStep/go-vimeworld/v1/vimeworld"
 	"os"
 	"testing"
+
+	"github.com/EpicStep/go-vimeworld/v1/vimeworld"
 )
 
 var client *vimeworld.Client

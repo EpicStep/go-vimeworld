@@ -2,8 +2,9 @@ package vimeworld_test
 
 import (
 	"context"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestClient_GetGames(t *testing.T) {
