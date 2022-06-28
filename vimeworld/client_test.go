@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/EpicStep/go-vimeworld/v1/vimeworld"
+	"github.com/EpicStep/go-vimeworld/vimeworld"
 )
 
 var client *vimeworld.Client

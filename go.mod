@@ -1,4 +1,4 @@
-module github.com/EpicStep/go-vimeworld/v1
+module github.com/EpicStep/go-vimeworld
 
 go 1.18
 
