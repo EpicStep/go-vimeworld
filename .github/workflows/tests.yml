@@ -33,7 +33,8 @@ jobs:
             test-${{ runner.os }}-go-
       - name: Checkout code
         uses: actions/checkout@v3
-
+      - name: Export token
+        run: VIMEWORLD_TOKEN=${{ secrets.VIMEWORLD_TOKEN }}
       - name: Run tests with coverage
         run: go test -race -v -coverpkg=./... -coverprofile=profile.out ./... && go tool cover -func profile.out
 
