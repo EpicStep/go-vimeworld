@@ -14,9 +14,8 @@ type Online struct {
 // GetOnline return online of a server.
 func (c *Client) GetOnline(ctx context.Context) (*Online, error) {
 	var result Online
-	u := "online"
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "online", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -43,9 +42,8 @@ type OnlineStream struct {
 // GetOnlineStreams returns online streams.
 func (c *Client) GetOnlineStreams(ctx context.Context) ([]*OnlineStream, error) {
 	var result []*OnlineStream
-	u := "online/streams"
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "online/streams", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -61,9 +59,8 @@ func (c *Client) GetOnlineStreams(ctx context.Context) ([]*OnlineStream, error) 
 // GetOnlineStaff returns online staff.
 func (c *Client) GetOnlineStaff(ctx context.Context) ([]*User, error) {
 	var result []*User
-	u := "online/staff"
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "online/staff", nil)
 	if err != nil {
 		return nil, err
 	}

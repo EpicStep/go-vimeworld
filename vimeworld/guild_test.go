@@ -26,9 +26,9 @@ func TestClient_GetGuildByID(t *testing.T) {
 func TestClient_GetGuildByName(t *testing.T) {
 	t.Parallel()
 
-	guild, err := client.GetGuildByName(context.Background(), "Fantastic Five")
+	guild, err := client.GetGuildByName(context.Background(), "VimeTop")
 	require.NoError(t, err)
-	require.Equal(t, 1, guild.ID)
+	require.Equal(t, 104, guild.ID)
 }
 
 func TestClient_GetGuildByTag(t *testing.T) {

@@ -1,3 +1,4 @@
+// Package vimeworld implements client to VimeWorld API.
 package vimeworld
 
 import (
@@ -69,7 +70,7 @@ func (c *Client) getToken() string {
 }
 
 // NewRequest creates an API request.
-func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
+func (c *Client) NewRequest(method, urlStr string, body any) (*http.Request, error) {
 	u, err := c.baseURL.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -130,8 +131,8 @@ type ErrorResponse struct {
 	Error Error `json:"error"`
 }
 
-// Do sends an API request and returns the API response.
-func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*http.Response, error) {
+// Do send an API request and returns the API response.
+func (c *Client) Do(ctx context.Context, req *http.Request, v any) (*http.Response, error) {
 	var errResponse ErrorResponse
 
 	resp, err := c.BareDo(ctx, req)
@@ -139,7 +140,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*htt
 		return resp, err
 	}
 
-	defer resp.Body.Close()
+	defer resp.Body.Close() // nolint:errcheck
 
 	rawData, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -152,7 +153,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*htt
 		return nil, &errResponse.Error
 	}
 
-	if err := json.Unmarshal(rawData, &v); err != nil {
+	if err = json.Unmarshal(rawData, &v); err != nil {
 		return nil, err
 	}
 

@@ -18,15 +18,15 @@ func TestClient_GetMatchLatest(t *testing.T) {
 func TestClient_GetMatchListBefore(t *testing.T) {
 	t.Parallel()
 
-	before, err := client.GetMatchListBefore(context.Background(), "461280233589309440", 1)
+	before, err := client.GetMatchListBefore(context.Background(), "851613653001043968", 1)
 	require.NoError(t, err)
-	require.Equal(t, "BP", before[0].Game)
+	require.Equal(t, "MURDER", before[0].Game)
 }
 
 func TestClient_GetMatchListAfter(t *testing.T) {
 	t.Parallel()
 
-	before, err := client.GetMatchListAfter(context.Background(), "461280233589309440", 1)
+	before, err := client.GetMatchListAfter(context.Background(), "851613653001043968", 1)
 	require.NoError(t, err)
-	require.Equal(t, "BWH", before[0].Game)
+	require.Equal(t, "LUCKYWARS", before[0].Game)
 }

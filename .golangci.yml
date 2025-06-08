@@ -1,64 +1,52 @@
-linters-settings:
-  govet:
-    check-shadowing: true
-  gocyclo:
-    min-complexity: 15
-  maligned:
-    suggest-new: true
-  dupl:
-    threshold: 120
-  goconst:
-    min-len: 2
-    min-occurrences: 3
-  misspell:
-    locale: US
-  lll:
-    line-length: 140
-  goimports:
-    local-prefixes: github.com/EpicStep/go-vimeworld
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - experimental
-      - opinionated
-      - performance
-      - style
-    disabled-checks:
-      - hugeParam
-      - rangeValCopy
-      - exitAfterDefer
-      - whyNoLint
-      - singleCaseSwitch
-      - commentedOutCode
-      - appendAssign
-      - unnecessaryBlock
-      - redundantSprint
-      - octalLiteral
+version: "2"
+
+run:
+  go: '1.24'
+  timeout: 5m
+  allow-parallel-runners: true
 
 linters:
-  disable-all: true
+  default: none
   enable:
-    - deadcode
-    - depguard
-    - dogsled
+    - dupl
     - errcheck
+    - ginkgolinter
     - goconst
-    - gocritic
-    - gofmt
-    - goimports
-    - revive
-    - gosec
-    - gosimple
+    - gocyclo
     - govet
     - ineffassign
     - misspell
     - nakedret
+    - prealloc
+    - revive
     - staticcheck
-    - structcheck
-    - stylecheck
-    - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
-    - whitespace
+    - errname
+    - gocritic
+    - nilerr
+    - interfacebloat
+    - usestdlibvars
+  settings:
+    revive:
+      enable-all-rules: true
+      rules:
+        - name: line-length-limit
+          arguments: [150]
+        - name: function-length
+          disabled: true
+        - name: add-constant
+          disabled: true
+        - name: max-public-structs
+          disabled: true
+        - name: cognitive-complexity
+          arguments: [15]
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/EpicStep/go-vimeworld

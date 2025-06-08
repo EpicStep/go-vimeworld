@@ -16,10 +16,10 @@ func TestClient_GetUsersByNames(t *testing.T) {
 	require.Equal(t, 1402876, users[1].ID)
 }
 
-func TestClient_GetUsersByIds(t *testing.T) {
+func TestClient_GetUsersByIDs(t *testing.T) {
 	t.Parallel()
 
-	users, err := client.GetUsersByIds(context.Background(), 134568, 1402876)
+	users, err := client.GetUsersByIDs(context.Background(), 134568, 1402876)
 	require.NoError(t, err)
 	require.Equal(t, "xtrafrancyz", users[0].Username)
 	require.Equal(t, "EpicStep", users[1].Username)

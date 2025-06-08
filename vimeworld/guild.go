@@ -2,19 +2,24 @@ package vimeworld
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"net/url"
+	"strconv"
 )
 
 // GuildSearch returns guilds by query.
 func (c *Client) GuildSearch(ctx context.Context, query string) ([]*UserGuild, error) {
 	var result []*UserGuild
-	u := fmt.Sprintf("guild/search?query=%s", query)
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "guild/search", nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("query", query)
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
@@ -59,12 +64,16 @@ type GuildMember struct {
 // GetGuildByID returns guild by ID.
 func (c *Client) GetGuildByID(ctx context.Context, id int) (*Guild, error) {
 	var result Guild
-	u := fmt.Sprintf("guild/get?id=%d", id)
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "guild/get", nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("id", strconv.Itoa(id))
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
@@ -77,12 +86,16 @@ func (c *Client) GetGuildByID(ctx context.Context, id int) (*Guild, error) {
 // GetGuildByName returns guild by name.
 func (c *Client) GetGuildByName(ctx context.Context, name string) (*Guild, error) {
 	var result Guild
-	u := fmt.Sprintf("guild/get?name=%s", name)
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "guild/get", nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("name", name)
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
@@ -95,12 +108,16 @@ func (c *Client) GetGuildByName(ctx context.Context, name string) (*Guild, error
 // GetGuildByTag returns guild by tag.
 func (c *Client) GetGuildByTag(ctx context.Context, tag string) (*Guild, error) {
 	var result Guild
-	u := fmt.Sprintf("guild/get?tag=%s", tag)
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "guild/get", nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("tag", tag)
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {

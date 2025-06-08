@@ -2,8 +2,8 @@ package vimeworld
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -34,7 +34,7 @@ type UserGuild struct {
 // GetUsersByNames return users by names.
 func (c *Client) GetUsersByNames(ctx context.Context, names ...string) ([]*User, error) {
 	var result []*User
-	u := fmt.Sprintf("user/name/%s", strings.Join(names, ","))
+	u := "user/name/" + url.PathEscape(strings.Join(names, ","))
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -49,8 +49,8 @@ func (c *Client) GetUsersByNames(ctx context.Context, names ...string) ([]*User,
 	return result, nil
 }
 
-// GetUsersByIds return users by ids.
-func (c *Client) GetUsersByIds(ctx context.Context, ids ...int) ([]*User, error) {
+// GetUsersByIDs return users by ids.
+func (c *Client) GetUsersByIDs(ctx context.Context, ids ...int) ([]*User, error) {
 	var result []*User
 	var idsStr string
 
@@ -61,7 +61,7 @@ func (c *Client) GetUsersByIds(ctx context.Context, ids ...int) ([]*User, error)
 		}
 	}
 
-	u := fmt.Sprintf("user/%s", idsStr)
+	u := "user/" + url.PathEscape(idsStr)
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -85,7 +85,7 @@ type Friends struct {
 // GetUserFriends return Friend list of user by ID.
 func (c *Client) GetUserFriends(ctx context.Context, id int) (*Friends, error) {
 	var result Friends
-	u := fmt.Sprintf("user/%d/friends", id)
+	u := "user/" + strconv.Itoa(id) + "/friends"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -116,7 +116,7 @@ type OnlineSession struct {
 // GetUserSession return user session by ID.
 func (c *Client) GetUserSession(ctx context.Context, id int) (*Session, error) {
 	var result Session
-	u := fmt.Sprintf("user/%d/session", id)
+	u := "user/" + strconv.Itoa(id) + "/session"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -133,23 +133,26 @@ func (c *Client) GetUserSession(ctx context.Context, id int) (*Session, error) {
 
 // UserStats struct.
 type UserStats struct {
-	User  User                   `json:"user"`
-	Stats map[string]interface{} `json:"stats"`
+	User  User           `json:"user"`
+	Stats map[string]any `json:"stats"`
 }
 
 // GetUserStats return user stats by ID
 func (c *Client) GetUserStats(ctx context.Context, id int, games ...string) (*UserStats, error) {
 	var result UserStats
-	u := fmt.Sprintf("user/%d/stats", id)
-
-	if len(games) > 0 {
-		u += "?games=" + strings.Join(games, ",")
-	}
+	u := "user/" + strconv.Itoa(id) + "/stats"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	if len(games) > 0 {
+		urlQuery.Set("games", strings.Join(games, ","))
+	}
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
@@ -174,7 +177,7 @@ type UserAchievement struct {
 // GetUserAchievements return user achievements by ID.
 func (c *Client) GetUserAchievements(ctx context.Context, id int) (*UserAchievements, error) {
 	var result UserAchievements
-	u := fmt.Sprintf("user/%d/achievements", id)
+	u := "user/" + strconv.Itoa(id) + "/achievements"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -205,7 +208,7 @@ type UserLeaderboard struct {
 // GetUserLeaderboards returns user leaderboard by ID.
 func (c *Client) GetUserLeaderboards(ctx context.Context, id int) (*UserLeaderboards, error) {
 	var result UserLeaderboards
-	u := fmt.Sprintf("user/%d/leaderboards", id)
+	u := "user/" + strconv.Itoa(id) + "/leaderboards"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -222,13 +225,16 @@ func (c *Client) GetUserLeaderboards(ctx context.Context, id int) (*UserLeaderbo
 
 // UserMatches struct.
 type UserMatches struct {
-	User    User `json:"user"`
-	Request struct {
-		Count  int `json:"count"`
-		Offset int `json:"offset"`
-		Size   int `json:"size"`
-	} `json:"request"`
-	Matches []UserMatch `json:"matches"`
+	User    User               `json:"user"`
+	Request UserMatchesRequest `json:"request"`
+	Matches []UserMatch        `json:"matches"`
+}
+
+// UserMatchesRequest ...
+type UserMatchesRequest struct {
+	Count  int `json:"count"`
+	Offset int `json:"offset"`
+	Size   int `json:"size"`
 }
 
 // UserMatch struct.
@@ -246,16 +252,20 @@ type UserMatch struct {
 // GetUserMatchesAfter return matches after id.
 func (c *Client) GetUserMatchesAfter(ctx context.Context, id int, after string, count int) (*UserMatches, error) {
 	var result UserMatches
-	u := fmt.Sprintf("user/%d/matches?after=%s", id, after)
-
-	if count > 0 {
-		u += "&count=" + strconv.Itoa(count)
-	}
+	u := "user/" + strconv.Itoa(id) + "/matches"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("after", after)
+	if count > 0 {
+		urlQuery.Set("count", strconv.Itoa(count))
+	}
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
@@ -268,16 +278,20 @@ func (c *Client) GetUserMatchesAfter(ctx context.Context, id int, after string, 
 // GetUserMatchesBefore return matches before id.
 func (c *Client) GetUserMatchesBefore(ctx context.Context, id int, before string, count int) (*UserMatches, error) {
 	var result UserMatches
-	u := fmt.Sprintf("user/%d/matches?before=%s", id, before)
-
-	if count > 0 {
-		u += "&count=" + strconv.Itoa(count)
-	}
+	u := "user/" + strconv.Itoa(id) + "/matches"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("before", before)
+	if count > 0 {
+		urlQuery.Set("count", strconv.Itoa(count))
+	}
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
@@ -290,16 +304,20 @@ func (c *Client) GetUserMatchesBefore(ctx context.Context, id int, before string
 // GetUserMatchesOffset return matches by offset.
 func (c *Client) GetUserMatchesOffset(ctx context.Context, id, offset, count int) (*UserMatches, error) {
 	var result UserMatches
-	u := fmt.Sprintf("user/%d/matches?offset=%d", id, offset)
-
-	if count > 0 {
-		u += "&count=" + strconv.Itoa(count)
-	}
+	u := "user/" + strconv.Itoa(id) + "/matches"
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("offset", strconv.Itoa(offset))
+	if count > 0 {
+		urlQuery.Set("count", strconv.Itoa(count))
+	}
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
@@ -322,9 +340,7 @@ func (c *Client) GetUsersSessions(ctx context.Context, ids ...int) ([]*UserSessi
 	var req *http.Request
 
 	if len(ids) > 50 {
-		u := "user/session"
-
-		req, err = c.NewRequest(http.MethodPost, u, ids)
+		req, err = c.NewRequest(http.MethodPost, "user/session", ids)
 		if err != nil {
 			return nil, err
 		}
@@ -338,9 +354,7 @@ func (c *Client) GetUsersSessions(ctx context.Context, ids ...int) ([]*UserSessi
 			}
 		}
 
-		u := fmt.Sprintf("user/session/%s", idsStr)
-
-		req, err = c.NewRequest(http.MethodGet, u, nil)
+		req, err = c.NewRequest(http.MethodGet, "user/session/"+idsStr, nil)
 		if err != nil {
 			return nil, err
 		}

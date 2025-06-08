@@ -2,27 +2,29 @@ package vimeworld
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"net/url"
 )
 
 // Game struct.
 type Game struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	GlobalStats []string `json:"global_stats"`
-	SeasonStats struct {
-		Monthly []string `json:"monthly"`
-		Manual  []string `json:"manual"`
-	} `json:"season_stats"`
+	ID          string            `json:"id"`
+	Name        string            `json:"name"`
+	GlobalStats []string          `json:"global_stats"`
+	SeasonStats GameSessionsStats `json:"season_stats"`
+}
+
+// GameSessionsStats ...
+type GameSessionsStats struct {
+	Monthly []string `json:"monthly"`
+	Manual  []string `json:"manual"`
 }
 
 // GetGames returns games.
 func (c *Client) GetGames(ctx context.Context) ([]*Game, error) {
 	var result []*Game
-	u := "misc/games"
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "misc/games", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -48,9 +50,8 @@ type Map struct {
 // GetMaps returns maps.
 func (c *Client) GetMaps(ctx context.Context) (*Maps, error) {
 	var result Maps
-	u := "misc/maps"
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "misc/maps", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -77,9 +78,8 @@ type Achievement struct {
 // GetAchievements returns achievements.
 func (c *Client) GetAchievements(ctx context.Context) (*Achievements, error) {
 	var result Achievements
-	u := "misc/achievements"
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "misc/achievements", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ type Token struct {
 // GetTokenInfo returns token info by token.
 func (c *Client) GetTokenInfo(ctx context.Context, token string) (*Token, error) {
 	var tokenResponse Token
-	u := fmt.Sprintf("misc/token/%s", token)
+	u := "misc/token/" + url.PathEscape(token)
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {

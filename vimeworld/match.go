@@ -2,8 +2,8 @@ package vimeworld
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -28,9 +28,8 @@ type MatchMap struct {
 // GetMatchLatest returns latest matches.
 func (c *Client) GetMatchLatest(ctx context.Context) ([]*Match, error) {
 	var result []*Match
-	u := "match/latest"
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "match/latest", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -46,16 +45,19 @@ func (c *Client) GetMatchLatest(ctx context.Context) ([]*Match, error) {
 // GetMatchListBefore returns matches before ID.
 func (c *Client) GetMatchListBefore(ctx context.Context, before string, count int) ([]*Match, error) {
 	var result []*Match
-	u := fmt.Sprintf("match/list?before=%s", before)
 
-	if count > 0 {
-		u += "&count=" + strconv.Itoa(count)
-	}
-
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "match/list", nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("before", before)
+	if count > 0 {
+		urlQuery.Set("count", strconv.Itoa(count))
+	}
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
@@ -68,16 +70,19 @@ func (c *Client) GetMatchListBefore(ctx context.Context, before string, count in
 // GetMatchListAfter returns matches after ID.
 func (c *Client) GetMatchListAfter(ctx context.Context, after string, count int) ([]*Match, error) {
 	var result []*Match
-	u := fmt.Sprintf("match/list?after=%s", after)
 
-	if count > 0 {
-		u += "&count=" + strconv.Itoa(count)
-	}
-
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "match/list", nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	urlQuery.Set("after", after)
+	if count > 0 {
+		urlQuery.Set("count", strconv.Itoa(count))
+	}
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {

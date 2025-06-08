@@ -2,8 +2,8 @@ package vimeworld
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -19,9 +19,8 @@ type AvailableLeaderboard struct {
 // GetLeaderboardList returns available leaderboards.
 func (c *Client) GetLeaderboardList(ctx context.Context) ([]*AvailableLeaderboard, error) {
 	var result []*AvailableLeaderboard
-	u := "leaderboard/list"
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(http.MethodGet, "leaderboard/list", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +36,7 @@ func (c *Client) GetLeaderboardList(ctx context.Context) ([]*AvailableLeaderboar
 // Leaderboard struct.
 type Leaderboard struct {
 	Meta    LeaderboardResponseMeta `json:"leaderboard"`
-	Records []interface{}           `json:"records"`
+	Records []any                   `json:"records"`
 }
 
 // LeaderboardResponseMeta struct.
@@ -52,28 +51,27 @@ type LeaderboardResponseMeta struct {
 // GetLeaderboard returns leaderboard.
 func (c *Client) GetLeaderboard(ctx context.Context, boardType, sort string, size, offset int) (*Leaderboard, error) {
 	var result Leaderboard
-	u := fmt.Sprintf("leaderboard/get/%s", boardType)
+	u := "leaderboard/get/" + url.PathEscape(boardType)
 
 	if sort != "" {
-		u += "/" + sort
-	}
-
-	if size > 0 {
-		u += "?size=" + strconv.Itoa(size)
-	}
-
-	if offset > 0 {
-		if size > 0 {
-			u += "&offset=" + strconv.Itoa(offset)
-		} else {
-			u += "?offset=" + strconv.Itoa(offset)
-		}
+		u += "/" + url.PathEscape(sort)
 	}
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	urlQuery := url.Values{}
+	if size > 0 {
+		urlQuery.Set("size", strconv.Itoa(size))
+	}
+
+	if offset > 0 {
+		urlQuery.Set("offset", strconv.Itoa(offset))
+	}
+
+	req.URL.RawQuery = urlQuery.Encode()
 
 	_, err = c.Do(ctx, req, &result)
 	if err != nil {
