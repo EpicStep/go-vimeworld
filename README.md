@@ -1,9 +1,8 @@
 go-vimeworld is a client for VimeWorld written in go.
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/EpicStep/go-vimeworld/vimeworld.svg)](https://pkg.go.dev/github.com/EpicStep/go-vimeworld/vimeworld)
-[![tests](https://github.com/EpicStep/go-vimeworld/actions/workflows/tests.yml/badge.svg)](https://github.com/EpicStep/go-vimeworld/actions/workflows/tests.yml)
-[![x](https://github.com/EpicStep/go-vimeworld/actions/workflows/ci.yml/badge.svg)](https://github.com/EpicStep/go-vimeworld/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/EpicStep/go-vimeworld/branch/master/graph/badge.svg?token=IY1T4ZMYZ8)](https://codecov.io/gh/EpicStep/go-vimeworld)
+[![Lint](https://github.com/EpicStep/go-vimeworld/actions/workflows/lint.yml/badge.svg)](https://github.com/EpicStep/go-vimeworld/actions/workflows/lint.yml)
+[![Test](https://github.com/EpicStep/go-vimeworld/actions/workflows/test.yml/badge.svg)](https://github.com/EpicStep/go-vimeworld/actions/workflows/test.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/EpicStep/go-vimeworld)](https://goreportcard.com/report/github.com/EpicStep/go-vimeworld)
 
 ----
